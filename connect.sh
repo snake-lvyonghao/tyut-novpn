@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/usr/bin/env bash
 username='xxx'
 password='xxx'
 check_root(){
