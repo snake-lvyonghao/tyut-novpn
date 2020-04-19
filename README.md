@@ -17,7 +17,7 @@ wget -N --no-check-certificate https://github.com/bla58351/tyut-novpn/raw/master
 之后，按照脚本提示输入相关信息，即可开始安装
 # 食用脚本
 没什么意外的话，执行`tyut`就能连接成功了  
-若因用户名或密码错误导致连接失败，自行编辑`/usr/local/bin/tyut`开头的`username`和`password`字段(未来可能会在安装脚本内提供修改功能)
+若因用户名或密码错误导致连接失败，~~自行编辑`/usr/local/bin/tyut`开头的`username`和`password`字段~~ (临时) 可以重新执行安装程序来重新设置(未来可能会在安装脚本内提供修改功能)
 
 # 脚本全部命令
 `tyut`: 直接连接到VPN  
