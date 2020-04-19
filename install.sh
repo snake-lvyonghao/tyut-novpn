@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-sh_ver="1.0.0"
+sh_ver="1.1"
 MotionPro_ver="1.2.6"
 MotionPro_file="/usr/bin/MotionPro"
 Green_font_prefix="\033[32m" && Red_font_prefix="\033[31m" && Green_background_prefix="\033[42;37m" && Red_background_prefix="\033[41;37m" && Font_color_suffix="\033[0m"
@@ -43,11 +43,11 @@ update_shell() {
     echo haha
 }
 install() {
+    read -p "请输入你的校园网登录用户名：" user
+    read -s -p "请输入你的校园网登录密码：" password
     if [[ -f ${MotionPro_file} ]]; then
-        echo -e "${Info} 你已经安装过MotionPro了" && exit 1
+        echo -e "${Info} MotionPro已经安装过，将跳过" && exit 1
     else
-        read -p "请输入你的校园网登录用户名：" user
-        read -s -p "请输入你的校园网登录密码：" password
         echo -e "${Info} 正在安装MotionPro"
         if [ ${release} == 'ubuntu' ]; then
             apt update && apt install -y sudo vim curl wget
@@ -68,20 +68,20 @@ install() {
         else
             echo -e "${Error} 下载MotionPro安装包失败，可以稍后重试安装" && exit 1
         fi
-        echo -e "${Info} 正在安装tyut"
-        wget --no-check-certificate "https://github-mirror.mygddown.workers.dev/https://github.com/bla58351/tyut-novpn/raw/master/tyut" && chmod +x tyut
+    fi
+    echo -e "${Info} 正在安装tyut"
+    wget --no-check-certificate "https://github-mirror.mygddown.workers.dev/https://github.com/bla58351/tyut-novpn/raw/master/tyut" && chmod +x tyut
+    if [ $? -eq 0 ]; then
+        sed -i "2i\username=${user}\npassword=${password}\n" tyut
+        mv tyut /usr/local/bin
         if [ $? -eq 0 ]; then
-            sed -i "2i\username=${user}\npassword=${password}\n" tyut
-            mv tyut /usr/local/bin
-            if [ $? -eq 0 ]; then
-                # clear
-                echo -e "${Info} tyut安装成功，你可以在 https://github.com/bla58351/tyut-novpn/blob/master/README.md 查阅使用方法"
-            else
-                echo -e "${Error} tyut安装失败" && exit 1
-            fi
+            # clear
+            echo -e "${Info} tyut安装成功，你可以在 https://github.com/bla58351/tyut-novpn/blob/master/README.md 查阅使用方法"
         else
-            echo -e "${Error} 无法下载tyut文件" && exit 1
+            echo -e "${Error} tyut安装失败" && exit 1
         fi
+    else
+        echo -e "${Error} 无法下载tyut文件" && exit 1
     fi
 }
 main() {
