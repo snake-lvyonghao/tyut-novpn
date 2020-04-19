@@ -1,45 +1,45 @@
-# tyut-novpn
+# TYUT-novpn
+![](https://img.shields.io/badge/version-1.0.0-green) [![GitHub stars](https://img.shields.io/github/stars/bla58351/tyut-novpn)](https://github.com/bla58351/tyut-novpn/stargazers)
+
 在服务器上搭建MotionPro客户端，达到免连VPN访问tyut校园内网的目的  
-
-# 一、安装
-ps:请全程在root环境下执行
-
-## 一、安装MotionPro
-前往[下载页](http://client.arraynetworks.com.cn:8080/zh/troubleshooting)下载服务器对应系统的`MotionPro客户端`  
-然后用`xftp`、`winscp`等ftp工具将下载的安装包传到服务器上  
-ssh连接服务器,执行`chmod +x ./MotionPro_Linux_Ubuntu_x64_v1.2.6.sh && ./MotionPro_Linux_Ubuntu_x64_v1.2.6.sh`(注意以下载的文件名为准)
-
-## 二、安装依赖
+[更新记录](#更新记录)
+# 下载安装
+ps:请全程在root环境下执行  
+  
+pps:本人仅在Ubuntu 18.04 LTS上测试通过，理论上CentOS也可使用，若出现安装及使用bug，请及时通过issue反馈。  
+  
+ppps:考虑到国内github访问不便，安装脚本内所有下载文件均使用`cloudflare workers`代理，若在你的设备上(多次)下载失败，请自行替换成可以使用的链接。  
+  
+现在，你可以通过直接执行下列命令来安装
 ```
-# Debian/Ubuntu 执行
-apt install -y sudo vim git curl
-# CentOS 执行
-yum install -y sudo vim git curl
+wget -N --no-check-certificate https://github.com/bla58351/tyut-novpn/raw/master/install.sh && chmod +x install.sh && bash install.sh
 ```
+之后，按照脚本提示输入相关信息，即可开始安装
+# 食用脚本
+没什么意外的话，执行`tyut`就能连接成功了  
+若因用户名或密码错误导致连接失败，自行编辑`/usr/local/bin/tyut`开头的`username`和`password`字段(未来可能会在安装脚本内提供修改功能)
 
-## 三、安装脚本
-执行`git clone https://github.com/bla58351/tyut-novpn.git && chmod +x tyut-novpn/connect.sh`  
-然后，本脚本就应该在`tyut-novpn`目录下了
+# 脚本全部命令
+`tyut`: 直接连接到VPN  
+`tyut check`: 检测VPN及校园内网连接状态  
+`tyut stop`: 断开VPN连接  
+`tyut restart`: 重新连接VPN
 
-# 二、使用脚本
+# 未来计划
+## 安装脚本
+- [ ] 卸载tyut及MotionPro
+- [ ] 更新脚本
+- [ ] 修改tyut用户名及密码
+- [ ] 查看详细信息
+- [ ] 一键部署反向代理工具(如`nginx`)
+## tyut
+- [ ] 断线重连
+- [ ] 就酱
 
-## 一、准备工作
-使用`vim`编辑`connect.sh`内的`username='xxx'`和`password='xxx'`，将`xxx`改为自己登录校园网的用户名(username)及密码(password)  
+# 更新记录
+#### V1.0.0
+- 写了一个简单的安装脚本
+- 配合安装脚本，原`connect.sh`更名为`tyut`，并修改了一些提示
 
-## 二、建立连接
-执行`nohup ./connect.sh & `(建议)。可能会有断开ssh的现象，直接重连即可  
-之后执行`./connect.sh check`，若结果为`VPN连接正常`，则连接已经成功
-
-# 三、脚本全部命令
-`./connect.sh`: 直接连接到VPN  
-`./connect.sh check`: 检测VPN及校园内网连接状态  
-`./connect.sh stop`: 断开VPN连接  
-`./connect.sh restart`: 重新连接VPN
-
-# 四、未来计划
-- [ ] 搭建http服务，以支持直接访问  
-- [ ] 将MotionPro安装包集成在内  
-- [ ] 一键部署脚本
-
-# 五、bug反馈
+# bug反馈
 若发现脚本使用时存在问题，如：服务器失联、连接失败等，可以发issue提交bug
