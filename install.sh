@@ -46,7 +46,7 @@ install() {
     read -p "请输入你的校园网登录用户名：" user
     read -s -p "请输入你的校园网登录密码：" password
     if [[ -f ${MotionPro_file} ]]; then
-        echo -e "${Info} MotionPro已经安装过，将跳过" && exit 1
+        echo -e "${Info} MotionPro已经安装过，将跳过"
     else
         echo -e "${Info} 正在安装MotionPro"
         if [ ${release} == 'ubuntu' ]; then
