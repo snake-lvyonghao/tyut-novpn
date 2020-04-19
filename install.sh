@@ -25,7 +25,7 @@ check_sys() {
     bit=$(uname -m)
 }
 check_update() {
-    sh_new_ver=$(wget --timeout=1 --no-check-certificate -qO- "https://github-mirror.mygddown.workers.dev/https://github.com/bla58351/tyut-novpn/raw/master/install.sh" | grep 'sh_ver="' | awk -F "=" '{print $NF}' | sed 's/\"//g' | head -1)
+    sh_new_ver=$(wget --timeout=10 --no-check-certificate -qO- "https://github-mirror.mygddown.workers.dev/https://github.com/bla58351/tyut-novpn/raw/master/install.sh" | grep 'sh_ver="' | awk -F "=" '{print $NF}' | sed 's/\"//g' | head -1)
     [[ -z ${sh_new_ver} ]] && echo -e "${Error} 检测最新版本失败 !"
     if [[ -n ${sh_new_ver} && ${sh_new_ver} != ${sh_ver} ]]; then
         echo -e "${Red_font_prefix}发现新版本[ ${sh_new_ver} ],推荐前往https://github.com/bla58351/tyut-novpn更新${Font_color_suffix}"
