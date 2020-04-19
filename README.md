@@ -37,6 +37,10 @@ wget -N --no-check-certificate https://github.com/bla58351/tyut-novpn/raw/master
 - [ ] 就酱
 
 # 更新记录
+
+#### V1.1
+- `install.sh`: (临时)当已经安装过MotionPro，将不再安装它
+
 #### V1.0.0
 - 写了一个简单的安装脚本
 - 配合安装脚本，原`connect.sh`更名为`tyut`，并修改了一些提示
