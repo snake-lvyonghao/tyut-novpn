@@ -25,7 +25,7 @@ check_sys() {
     bit=$(uname -m)
 }
 check_update() {
-    sh_new_ver=$(wget --timeout=1 --no-check-certificate -qO- "https://github-mirror.mygddown.workers.dev/https://github.com/bla58351/tyut-novpn/raw/dev/install.sh" | grep 'sh_ver="' | awk -F "=" '{print $NF}' | sed 's/\"//g' | head -1)
+    sh_new_ver=$(wget --timeout=1 --no-check-certificate -qO- "https://github-mirror.mygddown.workers.dev/https://github.com/bla58351/tyut-novpn/raw/master/install.sh" | grep 'sh_ver="' | awk -F "=" '{print $NF}' | sed 's/\"//g' | head -1)
     [[ -z ${sh_new_ver} ]] && echo -e "${Error} 检测最新版本失败 !"
     if [[ -n ${sh_new_ver} && ${sh_new_ver} != ${sh_ver} ]]; then
         echo -e "${Red_font_prefix}发现新版本[ ${sh_new_ver} ],推荐前往https://github.com/bla58351/tyut-novpn更新${Font_color_suffix}"
@@ -56,7 +56,7 @@ install() {
             yum install -y sudo vim curl wget
             system="CentOS"
         fi
-        wget --no-check-certificate "https://github-mirror.mygddown.workers.dev/https://github.com/bla58351/tyut-novpn/raw/dev/src/MotionPro_Linux_${system}_x64_v${MotionPro_ver}.sh"
+        wget --no-check-certificate "https://github-mirror.mygddown.workers.dev/https://github.com/bla58351/tyut-novpn/raw/master/src/MotionPro_Linux_${system}_x64_v${MotionPro_ver}.sh"
         if [ $? -eq 0 ]; then
             sh ./MotionPro_Linux_${system}_x64_v${MotionPro_ver}.sh
             if [[ -f ${MotionPro_file} ]]; then
@@ -69,7 +69,7 @@ install() {
             echo -e "${Error} 下载MotionPro安装包失败，可以稍后重试安装" && exit 1
         fi
         echo -e "${Info} 正在安装tyut"
-        wget --no-check-certificate "https://github-mirror.mygddown.workers.dev/https://github.com/bla58351/tyut-novpn/raw/dev/tyut" && chmod +x tyut
+        wget --no-check-certificate "https://github-mirror.mygddown.workers.dev/https://github.com/bla58351/tyut-novpn/raw/master/tyut" && chmod +x tyut
         if [ $? -eq 0 ]; then
             sed -i "2i\username=${user}\npassword=${password}\n" tyut
             mv tyut /usr/local/bin
