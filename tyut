@@ -27,7 +27,7 @@ crontab() {
     if [ $(grep "tyut crontab" /var/spool/cron/crontabs/root | wc -l) -gt 0 ]; then
         auto_check
     else
-        echo "*/1 * * * * tyut crontab" >> /var/spool/cron/crontabs/root
+        echo "*/1 * * * * /usr/local/bin/tyut crontab" >> /var/spool/cron/crontabs/root
         if [ $? -eq 0 ]; then
             echo -e "${Info} crontab任务添加成功"
         else
