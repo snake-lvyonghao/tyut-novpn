@@ -1,49 +1,79 @@
 #!/usr/bin/env bash
+Green_font_prefix="\033[32m" && Red_font_prefix="\033[31m" && Green_background_prefix="\033[42;37m" && Red_background_prefix="\033[41;37m" && Font_color_suffix="\033[0m"
+Info="${Green_font_prefix}[信息]${Font_color_suffix}"
+Error="${Red_font_prefix}[错误]${Font_color_suffix}"
+Tip="${Green_font_prefix}[注意]${Font_color_suffix}"
+check_ip=202.207.240.243
 check_root() {
     [[ $EUID != 0 ]] && echo -e "${Error} 当前非ROOT账号(或没有ROOT权限)，无法继续操作，请更换ROOT账号或使用 ${Green_background_prefix}sudo su${Font_color_suffix} 命令获取临时ROOT权限（执行后可能会提示输入当前账号的密码）。" && exit 1
+}
+add_route() {
+    route del -net 0.0.0.0 gw 1.1.1.1 dev tun0
+    route add -net 0.0.0.0 gw ${route_gateway} dev ${route_interface}
+    route add -net 202.207.0.0 netmask 255.255.0.0 gw 1.1.1.1 dev tun0
+}
+ac_login() {
+    curl 'http://202.207.240.67:801/eportal/?c=ACSetting&a=Login&wlanuserip=null&wlanacip=null&wlanacname=null&port=&iTermType=1&mac=123456789012&ip=000.000.000.000&redirect=null' -H 'Connection: keep-alive' -H 'Origin: http://202.207.240.67' -H 'Content-Type: application/x-www-form-urlencoded' -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36' -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9' -H 'Referer: http://202.207.240.67/a70.htm' -H 'Accept-Language: zh-CN,zh;q=0.9,en;q=0.8,ja;q=0.7' -H "Cookie: divshowUID=${username}; md5_login=${username}%7C${password}; PHPSESSID=sbtsjh237ps9q23qm3es6jfpa1" --data "DDDDD=${username}&upass=${password}&save_me=1" --compressed --insecure
+}
+auto_check() {
+    ping -c1 ${check_ip} >>/dev/null
+    if [ $? -eq 0 ]; then
+        echo "连接正常" # 实际并没什么用^_^
+    else
+        ac_login
+    fi
+}
+crontab() {
+    if [ $(grep "tyut crontab" /var/spool/cron/crontabs/root | wc -l) -gt 0 ]; then
+        auto_check
+    else
+        echo "*/1 * * * * tyut crontab" >> /var/spool/cron/crontabs/root
+        if [ $? -eq 0 ]; then
+            echo -e "${Info} crontab任务添加成功"
+        else
+            echo -e "${Error} crontab任务添加失败"
+        fi
+    fi
 }
 stop() {
     MotionPro -s
     killall vpnd
-    echo "MotionPro已停止"
+    echo -e "${Info} MotionPro已停止"
 }
 start() {
     route_gateway=$(route -n | grep -i "UG" | awk '{print $2}')
     route_interface=$(route -n | grep -i "UG" | awk '{print $8}')
     if [ $(route -n | awk '$8=="tun0"{print $8}' | wc -l) -gt 0 ]; then
-        echo "MotionPro正在运行"
+        echo -e "${Tip} MotionPro正在运行"
     else
         if [ $(ps -C vpnd --no-header | wc -l) -eq 0 ]; then
-            echo "Vpnd not running, starting"
+            echo -e "${Tip} Vpnd not running, starting"
             vpnd
         else
-            echo "Vpnd was already started"
+            echo -e "${Info} Vpnd was already started"
         fi
         MotionPro -h vpn1.tyut.edu.cn -u $username -p $password
         if [ $? -eq 0 ]; then
             sleep 3s
-            curl 'http://202.207.240.67:801/eportal/?c=ACSetting&a=Login&wlanuserip=null&wlanacip=null&wlanacname=null&port=&iTermType=1&mac=123456789012&ip=000.000.000.000&redirect=null' -H 'Connection: keep-alive' -H 'Pragma: no-cache' -H 'Cache-Control: no-cache' -H 'Origin: http://202.207.240.67' -H 'Upgrade-Insecure-Requests: 1' -H 'DNT: 1' -H 'Content-Type: application/x-www-form-urlencoded' -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36' -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9' -H 'Referer: http://202.207.240.67/a70.htm' -H 'Accept-Language: zh-CN,zh;q=0.9,en;q=0.8,ja;q=0.7' -H "Cookie: divshowUID=$username; md5_login=$username%7C$password; PHPSESSID=sbtsjh237ps9q23qm3es6jfpa1" --data "DDDDD=$username&upass=$password&save_me=1" --compressed --insecure
-            route del -net 0.0.0.0 gw 1.1.1.1 dev tun0
-            route add -net 0.0.0.0 gw $route_gateway dev $route_interface
-            route add -net 202.207.0.0 netmask 255.255.0.0 gw 1.1.1.1 dev tun0
+            ac_login
             sleep 1s
+            add_route
             check
         else
-            echo "MotionPro连接失败"
+            echo -e "${Error} MotionPro连接失败"
         fi
     fi
 }
 check() {
     if [ $(route -n | awk '$8=="tun0"{print $8}' | wc -l) -gt 0 ]; then
-        host=202.207.240.243
-        ping -c1 $host >>/dev/null
+        ping -c1 $check_ip >>/dev/null
         if [ $? -eq 0 ]; then
-            echo VPN连接正常
+            echo -e "${Info} VPN连接正常"
         else
-            echo VPN已连接，但无法连接至内网，要不试试 $0 restart
+            echo -e "${Tip} VPN已连接，但无法连接至内网"
         fi
     else
-        echo VPN未连接
+        echo -e "${Tip} VPN未连接"
     fi
 }
 restart() {
@@ -62,6 +92,9 @@ main() {
         ;;
     restart)
         restart
+        ;;
+    crontab)
+        crontab
         ;;
     *)
         start

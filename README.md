@@ -1,14 +1,15 @@
 # TYUT-novpn
-![](https://img.shields.io/badge/version-1.0.0-green) [![GitHub stars](https://img.shields.io/github/stars/bla58351/tyut-novpn)](https://github.com/bla58351/tyut-novpn/stargazers)
+![](https://img.shields.io/badge/version-1.2-green) [![GitHub stars](https://img.shields.io/github/stars/bla58351/tyut-novpn)](https://github.com/bla58351/tyut-novpn/stargazers)
 
 在服务器上搭建MotionPro客户端，达到免连VPN访问tyut校园内网的目的  
+Please read this document completely when you first use or upgrade script's version.  
 [更新记录](#更新记录)
 # 下载安装
 ps:请全程在root环境下执行  
   
 pps:本人仅在Ubuntu 18.04 LTS上测试通过，理论上CentOS也可使用，若出现安装及使用bug，请及时通过issue反馈。  
   
-ppps:考虑到国内github访问不便，安装脚本内所有下载文件均使用`cloudflare workers`代理，若在你的设备上(多次)下载失败，请自行替换成可以使用的链接。  
+ppps:考虑到国内github访问不便，安装脚本内所有下载文件均使用`cloudflare workers`代理，若在你的设备上(多次)下载失败，请自行替换成可以使用的链接。(看起来cloudflare的速度挺随缘的。)  
   
 现在，你可以通过直接执行下列命令来安装
 ```
@@ -23,7 +24,8 @@ wget -N --no-check-certificate https://github.com/bla58351/tyut-novpn/raw/master
 `tyut`: 直接连接到VPN  
 `tyut check`: 检测VPN及校园内网连接状态  
 `tyut stop`: 断开VPN连接  
-`tyut restart`: 重新连接VPN
+`tyut restart`: 重新连接VPN  
+`tyut crontab`: (Dev)使用crontab实现断线重连，直接执行即可
 
 # 未来计划
 ## 安装脚本
@@ -33,10 +35,15 @@ wget -N --no-check-certificate https://github.com/bla58351/tyut-novpn/raw/master
 - [ ] 查看详细信息
 - [ ] 一键部署反向代理工具(如`nginx`)
 ## tyut
-- [ ] 断线重连
+- [x] 断线重连
 - [ ] 就酱
 
 # 更新记录
+
+#### V1.2
+- `tyut`: (Dev)加入断线重连功能，通过`crontab`实现，默认检测周期为1分钟。
+- `tyut`: 重构部分实现
+- `tyut`: 修改了一些提示
 
 #### V1.1
 - `install.sh`: (临时)当已经安装过MotionPro，将不再安装它

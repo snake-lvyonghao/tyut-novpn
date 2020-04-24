@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-sh_ver="1.1"
+sh_ver="1.2"
 MotionPro_ver="1.2.6"
 MotionPro_file="/usr/bin/MotionPro"
 Green_font_prefix="\033[32m" && Red_font_prefix="\033[31m" && Green_background_prefix="\033[42;37m" && Red_background_prefix="\033[41;37m" && Font_color_suffix="\033[0m"
@@ -72,7 +72,7 @@ install() {
     echo -e "${Info} 正在安装tyut"
     wget --no-check-certificate "https://github-mirror.mygddown.workers.dev/https://github.com/bla58351/tyut-novpn/raw/master/tyut" && chmod +x tyut
     if [ $? -eq 0 ]; then
-        sed -i "2i\username=${user}\npassword=${password}\n" tyut
+        sed -i "2i\username=${user}\npassword=${password}" tyut
         mv tyut /usr/local/bin
         if [ $? -eq 0 ]; then
             # clear
